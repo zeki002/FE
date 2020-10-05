@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TicTocToe</title>
+    <style>
+      .box {
+        width: 150px;
+        height: 150px;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        box-sizing: border-box;
+        border: 1px solid black;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box" id="box"></div>
+
+    <script>
+      let step = 1;
+      let finish = false;
+      let data = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      function show() {
+        const box = document.getElementById('box');
+        box.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            const cell = document.createElement('div');
+            cell.setAttribute('class', 'cell');
+            const idx = i * 3 + j;
+            cell.innerText = data[idx] === 0 ? '' : data[idx] === 1 ? '⭕️' : '❎';
+            cell.addEventListener('click', () => {
+              if (data[idx] !== 0 || finish) {
+                return;
+              }
+              data[idx] = step;
+              show();
+              if (isWin(data)) {
+                finish = true;
+                const t = setTimeout(() => {
+                  clearTimeout(t);
+                  finish = false;
+                  data = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                  show();
+                }, 8000);
+                return alert(`game over! ${step === 1 ? '⭕️' : '❎'} is win!`);
+              }
+              step = 3 - step;
+              if (willWin()) {
+                console.log(`㊗️:${step === 1 ? '⭕️' : '❎'} will win!`);
+              }
+            });
+            frag.appendChild(cell);
+          }
+        }
+        box.appendChild(frag);
+      }
+
+      function isWin(data) {
+        for (let i = 0; i < 3; i++) {
+          // 横
+          if (data[3 * i] === step && data[3 * i] === data[3 * i + 1] && data[3 * i + 1] === data[3 * i + 2]) {
+            return true;
+          }
+          // 竖
+          if (data[i] === step && data[i] === data[i + 3] && data[3 + i] === data[i + 6]) {
+            return true;
+          }
+        }
+        if (data[0] === step && data[0] === data[4] && data[4] === data[8]) {
+          return true;
+        }
+        if (data[2] === step && data[2] === data[4] && data[4] === data[6]) {
+          return true;
+        }
+
+        return false;
+      }
+
+      function willWin() {
+        for (let i = 0; i < data.length; i++) {
+          if (!data[i]) {
+            const copy = data.slice();
+            copy[i] = step;
+            if (isWin(copy)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+      show();
+    </script>
+  </body>
+</html>

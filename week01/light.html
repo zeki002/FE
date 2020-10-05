@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Light</title>
+    <style>
+      .container {
+        display: flex;
+        width: 500px;
+        height: 300px;
+        margin: 0 auto;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .green,
+      .yellow,
+      .red {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: lightgray;
+      }
+      .green.light {
+        background-color: green;
+      }
+      .yellow.light {
+        background-color: yellow;
+      }
+      .red.light {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="green"></div>
+      <div class="yellow"></div>
+      <div class="red"></div>
+    </div>
+
+    <script>
+      function showLight(selector) {
+        const curr = document.querySelector('.light');
+        if (curr) {
+          curr.className = curr.className.replace('light');
+        }
+        const ele = document.querySelector(selector);
+        if (ele) {
+          const cls = ele.className;
+          ele.className = `${cls} light`;
+        }
+      }
+      function sleep(delay) {
+        return new Promise((resolve) => {
+          const timer = setTimeout(() => {
+            clearTimeout(timer);
+            resolve();
+          }, delay);
+        });
+      }
+      function run() {
+        console.log('in promise');
+        showLight('.green');
+        sleep(3000)
+          .then(() => {
+            showLight('.yellow');
+            return sleep(1000);
+          })
+          .then(() => {
+            showLight('.red');
+            return sleep(2000);
+          })
+          .then(() => {
+            run();
+          });
+      }
+      // async function run() {
+      //   while (true) {
+      //     showLight('.green');
+      //     await sleep(3000);
+      //     showLight('.yellow');
+      //     await sleep(1000);
+      //     showLight('.red');
+      //     await sleep(2000);
+      //   }
+      // }
+      run();
+    </script>
+  </body>
+</html>
